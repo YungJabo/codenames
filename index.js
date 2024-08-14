@@ -1,5 +1,5 @@
 import express from "express";
-import { setupWebSocket } from "../ws.js";
+import { setupWebSocket } from "./ws.js";
 import path from "path";
 import { fileURLToPath } from "url";
 
