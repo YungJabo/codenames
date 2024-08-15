@@ -100,14 +100,12 @@ const handleNewText = (ws, text) => {
   // Validate the text format using a regular expression
   const textPattern = /^[^\s]+\s\d+$/;
   if (!textPattern.test(text)) {
-    console.log("Invalid text format");
     return;
   }
 
   // Find the player who sent the message
   const player = gameState.players.find((player) => player.ws === ws);
   if (!player) {
-    console.log("Player not found");
     return;
   }
 
@@ -130,7 +128,6 @@ const returnWords = (wss) => {
     const player = gameState.players.find((p) => p.ws === client);
 
     if (player.team === "player1") {
-      console.log(gameState.wordsPlayer1);
       client.send(
         JSON.stringify({
           type: "words",
@@ -182,10 +179,7 @@ export function setupWebSocket(server) {
   const wss = new WebSocketServer({ server });
 
   wss.on("connection", (ws) => {
-    console.log("New client connected");
-
     ws.on("message", async (message) => {
-      console.log(`Received message: ${message}`);
       const parsedMessage = JSON.parse(message);
       if (parsedMessage.type === "addPlayer") {
         addPlayer(ws, parsedMessage.username, parsedMessage.team);
@@ -256,7 +250,7 @@ export function setupWebSocket(server) {
               }
               if (opponentWords[wordIndex].color === "green") {
                 gameState.greenWords += 1;
-                console.log(gameState.greenWords);
+
                 if (gameState.greenWords === 15) {
                   returnWords(wss);
                   returnWinInfo();
