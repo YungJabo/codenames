@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = 3000;
 
-const buildPath = path.join(__dirname, "../dist");
+const buildPath = path.join(__dirname, "/dist");
 app.use(express.static(buildPath));
 // Запуск сервера
 const server = app.listen(PORT, () => {
