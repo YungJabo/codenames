@@ -201,6 +201,10 @@ export function setupWebSocket(server) {
         returnPlayerInfo();
       }
       if (parsedMessage.type === "loadWords") {
+        const player = gameState.players.find((player) => player.ws === ws);
+        if (player.team !== "player1") {
+          return;
+        }
         const { player1, player2 } = getWords();
         gameState.wordsPlayer1 = player1;
         gameState.wordsPlayer2 = player2;
