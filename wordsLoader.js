@@ -36,6 +36,11 @@ function assignColors(words, commonGreenIndices) {
 
   // Перемешиваем только те индексы, которые не являются общими
   nonCommonIndices.sort(() => 0.5 - Math.random());
+  nonCommonIndices.sort(() => 0.5 - Math.random());
+  nonCommonIndices.sort(() => 0.5 - Math.random());
+  nonCommonIndices.sort(() => 0.5 - Math.random());
+  nonCommonIndices.sort(() => 0.5 - Math.random());
+  nonCommonIndices.sort(() => 0.5 - Math.random());
 
   // Создаем новый массив для перемешанных цветов
   let shuffledColors = Array(25);
@@ -56,6 +61,9 @@ function assignColors(words, commonGreenIndices) {
       greenIndices.push(index);
     }
   });
+  greenIndices.sort(() => 0.5 - Math.random());
+  greenIndices.sort(() => 0.5 - Math.random());
+  greenIndices.sort(() => 0.5 - Math.random());
   greenIndices.sort(() => 0.5 - Math.random());
   greenIndices = greenIndices.slice(0, 6);
   const newArray = Array(words.length);
