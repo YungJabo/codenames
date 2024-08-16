@@ -237,27 +237,60 @@ export function setupWebSocket(server) {
             gameState.selectedWord = wordIndex + 1;
             returnGameState(wss);
             const timeoutId = setTimeout(() => {
-              playerWords[wordIndex].color = opponentWords[wordIndex].color;
-              playerWords[wordIndex].active = false;
-              opponentWords[wordIndex].active = false;
               if (opponentWords[wordIndex].color === "grey") {
+                if (
+                  playerWords[wordIndex].selectedGrey &&
+                  opponentWords[wordIndex].selectedGrey
+                ) {
+                  opponentWords[wordIndex].selectedGrey = null;
+                  playerWords[wordIndex].selectedGrey = null;
+                  playerWords[wordIndex].active = false;
+                } else {
+                  opponentWords[wordIndex].selectedGrey = player.team;
+                  playerWords[wordIndex].selectedGrey = player.team;
+                  playerWords[wordIndex].active = false;
+                }
+
                 gameState.remainingTurns -= 1;
                 gameState.isChatting = true;
-              }
-              if (opponentWords[wordIndex].color === "black") {
-                returnWords(wss);
-                returnLooseInfo();
-                gameState.currentTurn = null;
-                gameState.isChatting = false;
-                gameState.selectedWord = null;
-                gameState.remainingTurns = 9;
-              }
-              if (opponentWords[wordIndex].color === "green") {
-                gameState.greenWords += 1;
+              } else {
+                const tempColor = playerWords[wordIndex].color;
+                playerWords[wordIndex].color = opponentWords[wordIndex].color;
+                playerWords[wordIndex].active = false;
+                opponentWords[wordIndex].active = false;
+                if (
+                  opponentWords[wordIndex].selectedGrey &&
+                  playerWords[wordIndex].selectedGrey
+                ) {
+                  opponentWords[wordIndex].color = tempColor;
+                  opponentWords[wordIndex].selectedGrey = null;
+                  playerWords[wordIndex].selectedGrey = null;
+                }
 
-                if (gameState.greenWords === 15) {
+                if (opponentWords[wordIndex].color === "black") {
                   returnWords(wss);
-                  returnWinInfo();
+                  returnLooseInfo();
+                  gameState.currentTurn = null;
+                  gameState.isChatting = false;
+                  gameState.selectedWord = null;
+                  gameState.remainingTurns = 9;
+                }
+                if (opponentWords[wordIndex].color === "green") {
+                  gameState.greenWords += 1;
+
+                  if (gameState.greenWords === 15) {
+                    returnWords(wss);
+                    returnWinInfo();
+                    gameState.greenWords = 0;
+                    gameState.currentTurn = null;
+                    gameState.isChatting = false;
+                    gameState.selectedWord = null;
+                    gameState.remainingTurns = 9;
+                  }
+                }
+
+                if (gameState.remainingTurns === 0) {
+                  returnLooseInfo();
                   gameState.greenWords = 0;
                   gameState.currentTurn = null;
                   gameState.isChatting = false;
@@ -265,15 +298,7 @@ export function setupWebSocket(server) {
                   gameState.remainingTurns = 9;
                 }
               }
-
-              if (gameState.remainingTurns === 0) {
-                returnLooseInfo();
-                gameState.greenWords = 0;
-                gameState.currentTurn = null;
-                gameState.isChatting = false;
-                gameState.selectedWord = null;
-                gameState.remainingTurns = 9;
-              }
+              gameState.selectedWord = null;
               returnGameState(wss);
               returnWords(wss);
               wordTimeouts.delete(ws); // Удаляем таймер после выполнения
@@ -292,6 +317,11 @@ export function setupWebSocket(server) {
       if (parsedMessage.type === "newText") {
         const { text } = parsedMessage;
         handleNewText(ws, text);
+        returnGameState(wss);
+      }
+      if (parsedMessage.type === "changeTurn") {
+        gameState.remainingTurns -= 1;
+        gameState.isChatting = true;
         returnGameState(wss);
       }
     });

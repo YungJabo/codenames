@@ -69,7 +69,6 @@ function assignColors(words, commonGreenIndices) {
 
   let remainingBlackCount = 3;
   let remainingGreyCount = 13;
-  console.log(newArray);
 
   for (let i = 0; i < newArray.length; i++) {
     if (newArray[i] !== "green") {
@@ -94,15 +93,15 @@ function assignColors(words, commonGreenIndices) {
       id: index + 1,
       word: word,
       color: shuffledColors[index],
-
       active: true,
+      selectedGrey: null,
     })),
     player2: words.map((word, index) => ({
       id: index + 1,
       word: word,
       color: newArray[index],
-
       active: true,
+      selectedGrey: null,
     })),
   };
 }
